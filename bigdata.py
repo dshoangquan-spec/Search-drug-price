@@ -12,7 +12,7 @@ def load_duckdb():
     con.execute(f"""
         CREATE OR REPLACE TABLE danhmuc AS 
         SELECT * 
-        FROM read_csv_auto('{url}', compression='gzip', delim=',', header=True, encoding='UTF8')
+        FROM read_csv_auto('{url}', compression='gzip', delim=',', header=True)
     """)
     con.execute("""
         ALTER TABLE danhmuc 
