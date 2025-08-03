@@ -82,6 +82,7 @@ st.markdown("""
 def load_data():
     url = "https://raw.githubusercontent.com/dshoangquan-spec/Search-drug-price/main/Danhmuc.csv.gz"
     df = pd.read_csv(url, compression="gzip", encoding="utf-8-sig")
+    st.write("📦 Tổng số dòng đọc được:", len(df))
     df["tungay_hd"] = pd.to_datetime(df["tungay_hd"], errors="coerce")
     df["denngay_hd"] = pd.to_datetime(df["denngay_hd"], errors="coerce")
     return df
