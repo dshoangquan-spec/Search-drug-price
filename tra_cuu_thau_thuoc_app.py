@@ -21,6 +21,12 @@ st.markdown("""
             color: #000000;
             padding: 10px 0;
         }
+        .metric-label {
+            font-weight: bold;
+            font-size: 16px;
+            text-align: center;
+            margin-bottom: 4px;
+        }
         .metric-box {
             font-weight: 600;
             font-size: 28px !important;
@@ -170,13 +176,20 @@ if not gia_values.empty:
     st.markdown("### 📊 Thống kê giá")
     col1, col2, col3, col4 = st.columns(4)
     with col1:
-        st.metric(label="🟢 Giá thấp nhất", value=f"{min_price:,.0f}")
+        st.markdown("<div class='metric-label'>🟢 Giá thấp nhất</div>", unsafe_allow_html=True)
+        st.metric(label="", value=f"{min_price:,.0f}")
+
     with col2:
-        st.metric(label="🔴 Giá cao nhất", value=f"{max_price:,.0f}")
+        st.markdown("<div class='metric-label'>🔴 Giá cao nhất</div>", unsafe_allow_html=True)
+        st.metric(label="", value=f"{max_price:,.0f}")
+
     with col3:
-        st.metric(label="🟡 Giá trung vị", value=f"{median_price:,.0f}")
+        st.markdown("<div class='metric-label'>🟡 Giá trung vị</div>", unsafe_allow_html=True)
+        st.metric(label="", value=f"{median_price:,.0f}")
+
     with col4:
-        st.metric(label="🔵 Giá trung bình", value=f"{avg_price:,.0f}")
+        st.markdown("<div class='metric-label'>🔵 Giá trung bình</div>", unsafe_allow_html=True)
+        st.metric(label="", value=f"{avg_price:,.0f}")
 else:
     st.warning("Không có dữ liệu giá để thống kê.")
 
