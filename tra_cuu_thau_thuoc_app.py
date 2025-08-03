@@ -1,5 +1,4 @@
-# Tạo mã Streamlit nâng cấp: lọc nhiều giá trị bằng multiselect và giao diện thân thiện di động
-upgraded_code = """
+
 import streamlit as st
 import pandas as pd
 import io
@@ -90,11 +89,3 @@ st.download_button(
     file_name="ket_qua_thau_thuoc.xlsx",
     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 )
-"""
-
-# Lưu lại file đã nâng cấp
-upgraded_path = "/mnt/data/tra_cuu_thau_thuoc_app_UPGRADED.py"
-with open(upgraded_path, "w", encoding="utf-8") as f:
-    f.write(upgraded_code)
-
-upgraded_path
