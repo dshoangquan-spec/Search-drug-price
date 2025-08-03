@@ -24,7 +24,6 @@ st.markdown("""
         .metric-box {
             font-weight: bold;
         }
-        /* Loại bỏ viền xanh */
         .stTextInput > div > div {
             border: none !important;
         }
@@ -44,14 +43,18 @@ def load_data():
 df = load_data()
 st.markdown('<div class="custom-header">TRA CỨU KẾT QUẢ THẦU THUỐC THEO DỮ LIỆU BHYT</div>', unsafe_allow_html=True)
 
-tim_theo = st.radio("", ["Tên thuốc", "Tên hoạt chất"], horizontal=False)
-
-if tim_theo == "Tên thuốc":
-    ten = st.text_input("Nhập tên thuốc")
-    hoatchat = ""
-else:
-    hoatchat = st.text_input("Nhập tên hoạt chất")
-    ten = ""
+col_left, col_center, col_right = st.columns([1, 1, 1])
+with col_left:
+    tim_theo = st.radio("", ["Tên thuốc", "Tên hoạt chất"], horizontal=False)
+with col_center:
+    if tim_theo == "Tên thuốc":
+        ten = st.text_input("Nhập tên thuốc")
+        hoatchat = ""
+    else:
+        hoatchat = st.text_input("Nhập tên hoạt chất")
+        ten = ""
+with col_right:
+    st.write("")
 
 st.markdown("**🔍 Kết quả tìm kiếm**")
 
