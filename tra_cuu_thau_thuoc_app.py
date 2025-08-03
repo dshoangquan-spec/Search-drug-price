@@ -82,7 +82,9 @@ st.markdown("""
 def load_data():
     url = "https://raw.githubusercontent.com/dshoangquan-spec/Search-drug-price/main/TH_KQTT_2024_2025_clean.csv.gz"
     df = pd.read_csv(url, compression="gzip", encoding="utf-8-sig")
-    df.columns = df.columns.str.strip().str.lower().str.replace('\r', '')  # Làm sạch tên cột
+
+    # Làm sạch tên cột để tránh lỗi
+    df.columns = df.columns.str.strip().str.lower().str.replace('\r', '')
 
     df["tungay_hd"] = pd.to_datetime(df.get("tungay_hd"), errors="coerce")
     df["denngay_hd"] = pd.to_datetime(df.get("denngay_hd"), errors="coerce")
@@ -115,7 +117,7 @@ with st.expander("📂 Bộ lọc nâng cao"):
         df_temp = df_temp[df_temp["hoatchat"].astype(str).str.lower().str.contains(hoatchat.strip().lower())]
 
     col1, col2 = st.columns(2)
-    duongdung_options = sorted(df_temp["duongdung"].dropna().unique())
+    dduongdung_options = sorted(df["duongdung"].dropna().unique())
     dangbaoche_options = sorted(df_temp["dangbaoche"].dropna().unique())
 
     duongdung = col1.multiselect("🚑 Chọn đường dùng", duongdung_options)
