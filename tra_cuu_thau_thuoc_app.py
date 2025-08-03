@@ -24,9 +24,7 @@ st.markdown("""
         .metric-box {
             font-weight: bold;
         }
-        .stTextInput > div > div {
-            border: none !important;
-        }
+        .stTextInput > div > div,
         .stRadio > div {
             border: none !important;
         }
@@ -43,7 +41,7 @@ def load_data():
 df = load_data()
 st.markdown('<div class="custom-header">TRA CỨU KẾT QUẢ THẦU THUỐC THEO DỮ LIỆU BHYT</div>', unsafe_allow_html=True)
 
-col_left, col_center, col_right = st.columns([1, 1, 1])
+col_left, col_center, col_right = st.columns(3)
 with col_left:
     tim_theo = st.radio("", ["Tên thuốc", "Tên hoạt chất"], horizontal=False)
 with col_center:
@@ -130,10 +128,10 @@ if not gia_values.empty:
 
     st.markdown("### 📊 Thống kê giá")
     col1, col2, col3, col4 = st.columns(4)
-    col1.metric("🟢 Giá thấp nhất", f"{min_price:,.0f}")
-    col2.metric("🔴 Giá cao nhất", f"{max_price:,.0f}")
-    col3.metric("🟡 Giá trung vị", f"{median_price:,.0f}")
-    col4.metric("🔵 Giá trung bình", f"{avg_price:,.0f}")
+    col1.metric("🟢 Giá thấp nhất", f"{min_price:,.0f}", help="Giá thấp nhất trong kết quả tìm được")
+    col2.metric("🔴 Giá cao nhất", f"{max_price:,.0f}", help="Giá cao nhất trong kết quả tìm được")
+    col3.metric("🟡 Giá trung vị", f"{median_price:,.0f}", help="Giá trung vị (median)")
+    col4.metric("🔵 Giá trung bình", f"{avg_price:,.0f}", help="Giá trung bình (average)")
 else:
     st.warning("Không có dữ liệu giá để thống kê.")
 
