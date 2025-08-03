@@ -21,27 +21,15 @@ st.markdown("""
             color: #000000;
             padding: 10px 0;
         }
-        .box-border {
-            border: 2px solid #2f64c7;
-            border-radius: 5px;
-            padding: 10px;
-            margin-bottom: 10px;
-        }
-        .metric-label {
-            font-weight: 600;
-            font-size: 16px;
-        }
-        .metric-value {
-            font-size: 24px;
+        .metric-box {
             font-weight: bold;
-            color: #1a1a1a;
         }
-        .metric-container {
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            padding: 10px;
-            background-color: #ffffff;
-            text-align: center;
+        /* Loại bỏ viền xanh */
+        .stTextInput > div > div {
+            border: none !important;
+        }
+        .stRadio > div {
+            border: none !important;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -56,18 +44,16 @@ def load_data():
 df = load_data()
 st.markdown('<div class="custom-header">TRA CỨU KẾT QUẢ THẦU THUỐC THEO DỮ LIỆU BHYT</div>', unsafe_allow_html=True)
 
-st.markdown('<div class="box-border">', unsafe_allow_html=True)
 tim_theo = st.radio("", ["Tên thuốc", "Tên hoạt chất"], horizontal=False)
-st.markdown('</div>', unsafe_allow_html=True)
 
-st.markdown('<div class="box-border">', unsafe_allow_html=True)
 if tim_theo == "Tên thuốc":
     ten = st.text_input("Nhập tên thuốc")
     hoatchat = ""
 else:
     hoatchat = st.text_input("Nhập tên hoạt chất")
     ten = ""
-st.markdown('</div>', unsafe_allow_html=True)
+
+st.markdown("**🔍 Kết quả tìm kiếm**")
 
 with st.expander("📂 Bộ lọc nâng cao"):
     df_temp = df.copy()
@@ -141,14 +127,10 @@ if not gia_values.empty:
 
     st.markdown("### 📊 Thống kê giá")
     col1, col2, col3, col4 = st.columns(4)
-    with col1:
-        st.markdown('<div class="metric-container"><div class="metric-label">🟢 Giá thấp nhất</div><div class="metric-value">{:,.0f}</div></div>'.format(min_price), unsafe_allow_html=True)
-    with col2:
-        st.markdown('<div class="metric-container"><div class="metric-label">🔴 Giá cao nhất</div><div class="metric-value">{:,.0f}</div></div>'.format(max_price), unsafe_allow_html=True)
-    with col3:
-        st.markdown('<div class="metric-container"><div class="metric-label">🟡 Giá trung vị</div><div class="metric-value">{:,.0f}</div></div>'.format(median_price), unsafe_allow_html=True)
-    with col4:
-        st.markdown('<div class="metric-container"><div class="metric-label">🔵 Giá trung bình</div><div class="metric-value">{:,.0f}</div></div>'.format(avg_price), unsafe_allow_html=True)
+    col1.metric("🟢 Giá thấp nhất", f"{min_price:,.0f}")
+    col2.metric("🔴 Giá cao nhất", f"{max_price:,.0f}")
+    col3.metric("🟡 Giá trung vị", f"{median_price:,.0f}")
+    col4.metric("🔵 Giá trung bình", f"{avg_price:,.0f}")
 else:
     st.warning("Không có dữ liệu giá để thống kê.")
 
