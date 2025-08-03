@@ -19,10 +19,10 @@ st.title("💊 Tra cứu kết quả thầu thuốc")
 with st.expander("📂 Bộ lọc nâng cao"):
 # Lọc trước theo tên hoặc hoạt chất để dùng cho dropdown
     df_temp = df.copy()
-        if ten:
-            df_temp = df_temp[df_temp["ten"].astype(str).str.lower().str.contains(ten.strip().lower())]
-        if hoatchat:
-            df_temp = df_temp[df_temp["hoatchat"].astype(str).str.lower().str.contains(hoatchat.strip().lower())]
+    if ten:
+        df_temp = df_temp[df_temp["ten"].astype(str).str.lower().str.contains(ten.strip().lower())]
+    if hoatchat:
+        df_temp = df_temp[df_temp["hoatchat"].astype(str).str.lower().str.contains(hoatchat.strip().lower())]
 
     col1, col2 = st.columns(2)
     duongdung_options = sorted(df_temp["duongdung"].dropna().unique())
