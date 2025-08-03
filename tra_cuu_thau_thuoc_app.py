@@ -145,7 +145,7 @@ st.markdown(f"### ✅ Tìm thấy {len(filtered_df)} kết quả")
 
 hidden_cols = ['loai_thau', 'ma_tinh', 'ten_don_vi', 'ma_cskcb', 'ma_gy', 'maduongdung', 'A', 'B', 'D', 'E', 'G', 'L']
 move_to_end = ['F', 'C', 'ten_cskcb', 'ten_tinh']
-cols = [col for col in filtered_df.columns if col not in hidden_cols + move_to_end] + move_to_end
+cols = [col for col in filtered_df.columns if col not in hidden_cols + move_to_end] + [col for col in move_to_end if col in filtered_df.columns]
 filtered_df = filtered_df[cols]
 
 filtered_df["gia"] = pd.to_numeric(filtered_df["gia"], errors="coerce")
