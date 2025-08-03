@@ -59,6 +59,16 @@ st.markdown("""
         .st-emotion-cache-1v0mbdj {
             padding: 1rem;
         }
+        .st-emotion-cache-1v0mbdj {
+            padding: 1rem;
+        }
+
+        /* Thu nhỏ tiêu đề h3 như "Tìm thấy X kết quả", "Thống kê giá" */
+        h3 {
+            font-size: 18px !important;
+            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
     </style>
 """, unsafe_allow_html=True)
 
