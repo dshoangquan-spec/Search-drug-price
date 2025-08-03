@@ -13,8 +13,18 @@ def load_data():
     return df
 
 df = load_data()
-
 st.title("💊 Tra cứu kết quả thầu thuốc")
+
+# 👉 Thêm đoạn này:
+tim_theo = st.radio("🔎 Tìm theo", ["Tên thuốc", "Hoạt chất"])
+
+ten = ""
+hoatchat = ""
+
+if tim_theo == "Tên thuốc":
+    ten = st.text_input("Nhập tên thuốc")
+elif tim_theo == "Hoạt chất":
+    hoatchat = st.text_input("Nhập hoạt chất")
 
 with st.expander("📂 Bộ lọc nâng cao"):
 # Lọc trước theo tên hoặc hoạt chất để dùng cho dropdown
