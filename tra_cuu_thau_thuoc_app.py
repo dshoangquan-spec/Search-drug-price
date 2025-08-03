@@ -6,7 +6,9 @@ st.set_page_config(page_title="Tra cứu kết quả thầu thuốc", layout="wi
 
 @st.cache_data
 def load_data():
-    df = pd.read_csv("demo_thau_thuoc.csv", sep=",", encoding="utf-8-sig", parse_dates=["tungay_hd", "denngay_hd"], dayfirst=True)
+    df = pd.read_csv("demo_thau_thuoc.csv", sep=",", encoding="utf-8-sig")
+    df["tungay_hd"] = pd.to_datetime(df["tungay_hd"], errors="coerce")
+    df["denngay_hd"] = pd.to_datetime(df["denngay_hd"], errors="coerce")
     return df
 
 df = load_data()
