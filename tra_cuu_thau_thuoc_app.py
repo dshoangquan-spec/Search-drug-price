@@ -45,7 +45,8 @@ with st.expander("📂 Bộ lọc nâng cao"):
 filtered_df = df.copy()
 
 def contains_filter(column, keyword):
-    return filtered_df[column].astype(str).str.contains(keyword, case=False, na=False)
+    keyword = keyword.strip().lower()
+    return filtered_df[column].astype(str).str.lower().str.contains(keyword, na=False)
 
 if ten:
     filtered_df = filtered_df[contains_filter("ten", ten)]
