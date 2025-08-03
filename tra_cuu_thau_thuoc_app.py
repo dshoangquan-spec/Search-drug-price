@@ -85,11 +85,12 @@ filtered_df = filtered_df[
 
 st.markdown(f"### ✅ Tìm thấy {len(filtered_df)} kết quả")
 
-# 1. Danh sách cột cần ẩn
-hidden_cols = ["A", "B", "D", "E", "G", "L"]
+# Ẩn và dời cột
+hidden_cols = ['loai_thau', 'ma_tinh', 'ten_don_vi', 'ma_cskcb', 'ma_gy', 'maduongdlu']
+move_to_end = ['ten_cskcb', 'ten_tinh']
 
-# 2. Đưa cột F và C ra cuối bảng
-cols = [col for col in filtered_df.columns if col not in hidden_cols + ["F", "C"]] + ["F", "C"]
+# Lấy tất cả cột còn lại trừ cột ẩn và cột cần chuyển ra cuối
+cols = [col for col in filtered_df.columns if col not in hidden_cols + move_to_end] + move_to_end
 filtered_df = filtered_df[cols]
 
 # Hiển thị bảng
