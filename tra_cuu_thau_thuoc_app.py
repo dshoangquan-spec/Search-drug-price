@@ -80,10 +80,12 @@ st.markdown("""
 
 @st.cache_data
 def load_data():
-    df = pd.read_csv("demo_thau_thuoc.csv", sep=",", encoding="utf-8-sig")
+    url = "https://raw.githubusercontent.com/dshoangquan-spec/Search-drug-price/main/Danhmuc.csv.gz"
+    df = pd.read_csv(url, compression="gzip", encoding="utf-8-sig")
     df["tungay_hd"] = pd.to_datetime(df["tungay_hd"], errors="coerce")
     df["denngay_hd"] = pd.to_datetime(df["denngay_hd"], errors="coerce")
     return df
+
 
 
 df = load_data()
