@@ -1,9 +1,37 @@
-
 import streamlit as st
 import pandas as pd
 import io
+from datetime import datetime
 
 st.set_page_config(page_title="Tra cứu thầu thuốc", layout="wide")
+
+# CSS tuỳ biến giao diện
+st.markdown("""
+    <style>
+        .main {
+            background-color: #f9f9f9;
+        }
+        .block-container {
+            padding-top: 2rem;
+        }
+        .custom-header {
+            font-size: 28px;
+            font-weight: bold;
+            text-align: center;
+            color: #000000;
+            padding: 10px 0;
+        }
+        .box-border {
+            border: 2px solid #2f64c7;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .metric-box {
+            font-weight: bold;
+        }
+    </style>
+""", unsafe_allow_html=True)
 
 @st.cache_data
 def load_data():
@@ -13,21 +41,26 @@ def load_data():
     return df
 
 df = load_data()
-st.title("💊 Tra cứu kết quả thầu thuốc")
+st.markdown('<div class="custom-header">TRA CỨU KẾT QUẢ THẦU THUỐC THEO DỮ LIỆU BHYT</div>', unsafe_allow_html=True)
 
-# 👉 Thêm đoạn này:
-tim_theo = st.radio("🔎 Tìm theo", ["Tên thuốc", "Hoạt chất"])
+st.markdown('<div class="box-border">', unsafe_allow_html=True)
+tim_theo = st.radio("", ["Tên thuốc", "Tên hoạt chất"], horizontal=False)
+st.markdown('</div>', unsafe_allow_html=True)
 
-ten = ""
-hoatchat = ""
-
+st.markdown('<div class="box-border">', unsafe_allow_html=True)
 if tim_theo == "Tên thuốc":
     ten = st.text_input("Nhập tên thuốc")
-elif tim_theo == "Hoạt chất":
-    hoatchat = st.text_input("Nhập hoạt chất")
+    hoatchat = ""
+else:
+    hoatchat = st.text_input("Nhập tên hoạt chất")
+    ten = ""
+st.markdown('</div>', unsafe_allow_html=True)
+
+st.markdown('<div class="box-border">', unsafe_allow_html=True)
+st.markdown("**🔍 Kết quả tìm kiếm**")
+st.markdown('</div>', unsafe_allow_html=True)
 
 with st.expander("📂 Bộ lọc nâng cao"):
-# Lọc trước theo tên hoặc hoạt chất để dùng cho dropdown
     df_temp = df.copy()
     if ten:
         df_temp = df_temp[df_temp["ten"].astype(str).str.lower().str.contains(ten.strip().lower())]
@@ -55,7 +88,6 @@ with st.expander("📂 Bộ lọc nâng cao"):
     tungay = col6.date_input("📅 Từ ngày (hiệu lực)", value=pd.to_datetime("2024-09-01"))
     denngay = st.date_input("📅 Đến ngày (hiệu lực)", value=pd.to_datetime("2025-03-31"))
 
-# Bắt đầu lọc dữ liệu
 filtered_df = df.copy()
 
 def contains_filter(column, keyword):
@@ -77,7 +109,6 @@ if nuocsx:
 if donvitinh:
     filtered_df = filtered_df[filtered_df["donvitinh"].isin(donvitinh)]
 
-# Lọc theo thời gian
 filtered_df = filtered_df[
     (filtered_df["tungay_hd"] >= pd.to_datetime(tungay)) &
     (filtered_df["denngay_hd"] <= pd.to_datetime(denngay))
@@ -85,21 +116,14 @@ filtered_df = filtered_df[
 
 st.markdown(f"### ✅ Tìm thấy {len(filtered_df)} kết quả")
 
-# Ẩn và dời cột
 hidden_cols = ['loai_thau', 'ma_tinh', 'ten_don_vi', 'ma_cskcb', 'ma_gy', 'maduongdung']
 move_to_end = ['ten_cskcb', 'ten_tinh']
-
-# Lấy tất cả cột còn lại trừ cột ẩn và cột cần chuyển ra cuối
 cols = [col for col in filtered_df.columns if col not in hidden_cols + move_to_end] + move_to_end
 filtered_df = filtered_df[cols]
 
-# Chuyển cột 'gia' thành số nếu chưa
 filtered_df["gia"] = pd.to_numeric(filtered_df["gia"], errors="coerce")
-
-# Loại bỏ các giá trị NaN nếu có
 gia_values = filtered_df["gia"].dropna()
 
-# Tính toán thống kê
 if not gia_values.empty:
     min_price = gia_values.min()
     max_price = gia_values.max()
@@ -115,10 +139,8 @@ if not gia_values.empty:
 else:
     st.warning("Không có dữ liệu giá để thống kê.")
 
-# Hiển thị bảng
 st.dataframe(filtered_df, use_container_width=True)
 
-# Xuất Excel
 def to_excel(df):
     output = io.BytesIO()
     with pd.ExcelWriter(output, engine='openpyxl') as writer:
