@@ -93,6 +93,28 @@ move_to_end = ['ten_cskcb', 'ten_tinh']
 cols = [col for col in filtered_df.columns if col not in hidden_cols + move_to_end] + move_to_end
 filtered_df = filtered_df[cols]
 
+# Chuyển cột 'gia' thành số nếu chưa
+filtered_df["gia"] = pd.to_numeric(filtered_df["gia"], errors="coerce")
+
+# Loại bỏ các giá trị NaN nếu có
+gia_values = filtered_df["gia"].dropna()
+
+# Tính toán thống kê
+if not gia_values.empty:
+    min_price = gia_values.min()
+    max_price = gia_values.max()
+    median_price = gia_values.median()
+    avg_price = gia_values.mean()
+
+    st.markdown("### 📊 Thống kê giá")
+    col1, col2, col3, col4 = st.columns(4)
+    col1.metric("🟢 Giá thấp nhất", f"{min_price:,.0f}")
+    col2.metric("🔴 Giá cao nhất", f"{max_price:,.0f}")
+    col3.metric("🟡 Giá trung vị", f"{median_price:,.0f}")
+    col4.metric("🔵 Giá trung bình", f"{avg_price:,.0f}")
+else:
+    st.warning("Không có dữ liệu giá để thống kê.")
+
 # Hiển thị bảng
 st.dataframe(filtered_df, use_container_width=True)
 
