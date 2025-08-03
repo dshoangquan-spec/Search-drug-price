@@ -11,10 +11,7 @@ def load_duckdb():
     con = duckdb.connect(database=':memory:')
     con.execute(f"""
         CREATE OR REPLACE TABLE danhmuc AS 
-        SELECT 
-            *, 
-            TRY_CAST(tungay_hd AS TIMESTAMP) AS tungay,
-            TRY_CAST(denngay_hd AS TIMESTAMP) AS denngay
+        SELECT * 
         FROM read_csv_auto('{url}', compression='gzip', delim=',', header=True)
     """)
     return con
@@ -54,7 +51,7 @@ with st.expander("📂 Bộ lọc nâng cao"):
     tungay = st.date_input("📅 Từ ngày (hiệu lực)", value=pd.to_datetime("2024-09-01"))
     denngay = st.date_input("📅 Đến ngày (hiệu lực)", value=pd.to_datetime("2025-03-31"))
 
-# Tạo câu truy vấn SQL
+# Tạo câu truy vấn SQL theo filter
 query = "SELECT * FROM danhmuc WHERE 1=1"
 
 if ten:
@@ -72,9 +69,9 @@ if nuocsx:
 if donvitinh:
     query += f" AND donvitinh IN ({','.join([f'\'{d}\'' for d in donvitinh])})"
 if tungay and denngay:
-    query += f" AND tungay >= TIMESTAMP '{tungay}' AND tungay <= TIMESTAMP '{denngay}'"
+    query += f" AND TRY_CAST(tungay_hd AS TIMESTAMP) BETWEEN TIMESTAMP '{tungay}' AND TIMESTAMP '{denngay}'"
 
-# Thực thi truy vấn
+# Chạy truy vấn và hiển thị
 df_result = con.execute(query).df()
 
 st.markdown(f"### ✅ Tìm thấy {len(df_result)} kết quả")
@@ -99,9 +96,11 @@ def to_excel(df):
         df.to_excel(writer, index=False)
     return output.getvalue()
 
+excel_data = to_excel(df_result)
+
 st.download_button(
     label="📥 Tải kết quả ra Excel",
-    data=to_excel(df_result),
+    data=excel_data,
     file_name="ket_qua_thau_duckdb.xlsx",
     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 )
