@@ -23,13 +23,24 @@ st.markdown("""
         }
         .metric-box {
             font-weight: 600;
-            font-size: 18px !important;
+            font-size: 28px !important;
+            text-align: center;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 10px;
+            background-color: #ffffff;
+        }
+        .metric-label {
+            font-weight: bold;
+            font-size: 20px;
+            text-align: center;
+            margin-bottom: 5px;
         }
         .stTextInput > div > div,
         .stRadio > div {
             border: none !important;
         }
-        .st-emotion-cache-1v0mbdj {  /* Override for metric column layout */
+        .st-emotion-cache-1v0mbdj {
             padding: 1rem;
         }
     </style>
@@ -116,8 +127,8 @@ filtered_df = filtered_df[
 
 st.markdown(f"### ✅ Tìm thấy {len(filtered_df)} kết quả")
 
-hidden_cols = ['loai_thau', 'ma_tinh', 'ten_don_vi', 'ma_cskcb', 'ma_gy', 'maduongdung']
-move_to_end = ['ten_cskcb', 'ten_tinh']
+hidden_cols = ['loai_thau', 'ma_tinh', 'ten_don_vi', 'ma_cskcb', 'ma_gy', 'maduongdung', 'A', 'B', 'D', 'E', 'G', 'L']
+move_to_end = ['F', 'C', 'ten_cskcb', 'ten_tinh']
 cols = [col for col in filtered_df.columns if col not in hidden_cols + move_to_end] + move_to_end
 filtered_df = filtered_df[cols]
 
@@ -133,16 +144,16 @@ if not gia_values.empty:
     st.markdown("### 📊 Thống kê giá")
     col1, col2, col3, col4 = st.columns(4)
     with col1:
-        st.markdown('<div class="metric-box">🟢 Giá thấp nhất</div>', unsafe_allow_html=True)
+        st.markdown('<div class="metric-label">🟢 Giá thấp nhất</div>', unsafe_allow_html=True)
         st.markdown(f"<div class='metric-box'>{min_price:,.0f}</div>", unsafe_allow_html=True)
     with col2:
-        st.markdown('<div class="metric-box">🔴 Giá cao nhất</div>', unsafe_allow_html=True)
+        st.markdown('<div class="metric-label">🔴 Giá cao nhất</div>', unsafe_allow_html=True)
         st.markdown(f"<div class='metric-box'>{max_price:,.0f}</div>", unsafe_allow_html=True)
     with col3:
-        st.markdown('<div class="metric-box">🟡 Giá trung vị</div>', unsafe_allow_html=True)
+        st.markdown('<div class="metric-label">🟡 Giá trung vị</div>', unsafe_allow_html=True)
         st.markdown(f"<div class='metric-box'>{median_price:,.0f}</div>", unsafe_allow_html=True)
     with col4:
-        st.markdown('<div class="metric-box">🔵 Giá trung bình</div>', unsafe_allow_html=True)
+        st.markdown('<div class="metric-label">🔵 Giá trung bình</div>', unsafe_allow_html=True)
         st.markdown(f"<div class='metric-box'>{avg_price:,.0f}</div>", unsafe_allow_html=True)
 else:
     st.warning("Không có dữ liệu giá để thống kê.")
