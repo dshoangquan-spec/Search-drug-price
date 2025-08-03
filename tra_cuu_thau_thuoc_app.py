@@ -85,6 +85,13 @@ filtered_df = filtered_df[
 
 st.markdown(f"### ✅ Tìm thấy {len(filtered_df)} kết quả")
 
+# 1. Danh sách cột cần ẩn
+hidden_cols = ["A", "B", "D", "E", "G", "L"]
+
+# 2. Đưa cột F và C ra cuối bảng
+cols = [col for col in filtered_df.columns if col not in hidden_cols + ["F", "C"]] + ["F", "C"]
+filtered_df = filtered_df[cols]
+
 # Hiển thị bảng
 st.dataframe(filtered_df, use_container_width=True)
 
