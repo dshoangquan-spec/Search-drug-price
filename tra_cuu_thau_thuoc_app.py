@@ -1,8 +1,10 @@
-
+# Tạo mã Streamlit nâng cấp: lọc nhiều giá trị bằng multiselect và giao diện thân thiện di động
+upgraded_code = """
 import streamlit as st
 import pandas as pd
+import io
 
-st.set_page_config(page_title="Tra cứu kết quả thầu thuốc", layout="wide")
+st.set_page_config(page_title="Tra cứu thầu thuốc", layout="wide")
 
 @st.cache_data
 def load_data():
@@ -13,66 +15,66 @@ def load_data():
 
 df = load_data()
 
-st.title("📋 Tra cứu kết quả thầu thuốc (Demo)")
+st.title("💊 Tra cứu kết quả thầu thuốc")
 
-with st.expander("🔎 Bộ lọc tìm kiếm"):
-    col1, col2, col3 = st.columns(3)
-    ten = col1.text_input("Tên thuốc (cột I)")
-    hoatchat = col2.text_input("Hoạt chất (cột J)")
-    duongdung = col3.text_input("Đường dùng (cột K)")
+with st.expander("📂 Bộ lọc nâng cao"):
+    ten = st.text_input("🔍 Tìm theo tên thuốc (từ khoá bất kỳ)", "")
+    hoatchat = st.text_input("💡 Tìm theo hoạt chất", "")
 
-    col4, col5, col6 = st.columns(3)
-    dangbaoche = col4.text_input("Dạng bào chế (cột M)")
-    hamluong = col5.text_input("Hàm lượng (cột N)")
-    donggoi = col6.text_input("Quy cách đóng gói (cột O)")
+    col1, col2 = st.columns(2)
+    duongdung_options = sorted(df["duongdung"].dropna().unique())
+    dangbaoche_options = sorted(df["dangbaoche"].dropna().unique())
 
-    col7, col8, col9 = st.columns(3)
-    nhasx = col7.text_input("Nhà sản xuất (cột Q)")
-    nuocsx = col8.text_input("Nước sản xuất (cột R)")
-    donvitinh = col9.text_input("Đơn vị tính (cột T)")
+    duongdung = col1.multiselect("🚑 Chọn đường dùng", duongdung_options)
+    dangbaoche = col2.multiselect("💊 Chọn dạng bào chế", dangbaoche_options)
 
-    col10, col11 = st.columns(2)
-    tungay = col10.date_input("Từ ngày (cột AJ)", value=pd.to_datetime("2024-09-01"))
-    denngay = col11.date_input("Đến ngày (cột AK)", value=pd.to_datetime("2025-03-31"))
+    col3, col4 = st.columns(2)
+    nhasx_options = sorted(df["nhasx"].dropna().unique())
+    nuocsx_options = sorted(df["nuocsx"].dropna().unique())
 
-# Lọc dữ liệu theo điều kiện nhập
+    nhasx = col3.multiselect("🏭 Nhà sản xuất", nhasx_options)
+    nuocsx = col4.multiselect("🌍 Nước sản xuất", nuocsx_options)
+
+    col5, col6 = st.columns(2)
+    donvitinh_options = sorted(df["donvitinh"].dropna().unique())
+    donvitinh = col5.multiselect("📦 Đơn vị tính", donvitinh_options)
+
+    tungay = col6.date_input("📅 Từ ngày (hiệu lực)", value=pd.to_datetime("2024-09-01"))
+    denngay = st.date_input("📅 Đến ngày (hiệu lực)", value=pd.to_datetime("2025-03-31"))
+
+# Bắt đầu lọc dữ liệu
 filtered_df = df.copy()
 
-def text_filter(col, val):
-    return filtered_df[col].str.contains(val, case=False, na=False)
+def contains_filter(column, keyword):
+    return filtered_df[column].astype(str).str.contains(keyword, case=False, na=False)
 
 if ten:
-    filtered_df = filtered_df[text_filter("ten", ten)]
+    filtered_df = filtered_df[contains_filter("ten", ten)]
 if hoatchat:
-    filtered_df = filtered_df[text_filter("hoatchat", hoatchat)]
+    filtered_df = filtered_df[contains_filter("hoatchat", hoatchat)]
 if duongdung:
-    filtered_df = filtered_df[text_filter("duongdung", duongdung)]
+    filtered_df = filtered_df[filtered_df["duongdung"].isin(duongdung)]
 if dangbaoche:
-    filtered_df = filtered_df[text_filter("dangbaoche", dangbaoche)]
-if hamluong:
-    filtered_df = filtered_df[text_filter("hamluong", hamluong)]
-if donggoi:
-    filtered_df = filtered_df[text_filter("donggoi", donggoi)]
+    filtered_df = filtered_df[filtered_df["dangbaoche"].isin(dangbaoche)]
 if nhasx:
-    filtered_df = filtered_df[text_filter("nhasx", nhasx)]
+    filtered_df = filtered_df[filtered_df["nhasx"].isin(nhasx)]
 if nuocsx:
-    filtered_df = filtered_df[text_filter("nuocsx", nuocsx)]
+    filtered_df = filtered_df[filtered_df["nuocsx"].isin(nuocsx)]
 if donvitinh:
-    filtered_df = filtered_df[text_filter("donvitinh", donvitinh)]
+    filtered_df = filtered_df[filtered_df["donvitinh"].isin(donvitinh)]
 
-# Lọc theo khoảng thời gian
+# Lọc theo thời gian
 filtered_df = filtered_df[
     (filtered_df["tungay_hd"] >= pd.to_datetime(tungay)) &
     (filtered_df["denngay_hd"] <= pd.to_datetime(denngay))
 ]
 
-st.success(f"🔍 Có {len(filtered_df)} kết quả được tìm thấy.")
+st.markdown(f"### ✅ Tìm thấy {len(filtered_df)} kết quả")
 
+# Hiển thị bảng
 st.dataframe(filtered_df, use_container_width=True)
 
-# Nút tải Excel
-import io
-
+# Xuất Excel
 def to_excel(df):
     output = io.BytesIO()
     with pd.ExcelWriter(output, engine='openpyxl') as writer:
@@ -88,4 +90,11 @@ st.download_button(
     file_name="ket_qua_thau_thuoc.xlsx",
     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 )
+"""
 
+# Lưu lại file đã nâng cấp
+upgraded_path = "/mnt/data/tra_cuu_thau_thuoc_app_UPGRADED.py"
+with open(upgraded_path, "w", encoding="utf-8") as f:
+    f.write(upgraded_code)
+
+upgraded_path
