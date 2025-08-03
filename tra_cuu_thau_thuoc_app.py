@@ -22,12 +22,15 @@ st.markdown("""
             padding: 10px 0;
         }
         .metric-box {
-            font-weight: bold;
-            font-size: 20px;
+            font-weight: 600;
+            font-size: 18px !important;
         }
         .stTextInput > div > div,
         .stRadio > div {
             border: none !important;
+        }
+        .st-emotion-cache-1v0mbdj {  /* Override for metric column layout */
+            padding: 1rem;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -129,10 +132,18 @@ if not gia_values.empty:
 
     st.markdown("### 📊 Thống kê giá")
     col1, col2, col3, col4 = st.columns(4)
-    col1.metric("🟢 Giá thấp nhất", f"{min_price:,.0f}", help="Giá thấp nhất trong kết quả tìm được")
-    col2.metric("🔴 Giá cao nhất", f"{max_price:,.0f}", help="Giá cao nhất trong kết quả tìm được")
-    col3.metric("🟡 Giá trung vị", f"{median_price:,.0f}", help="Giá trung vị (median)")
-    col4.metric("🔵 Giá trung bình", f"{avg_price:,.0f}", help="Giá trung bình (average)")
+    with col1:
+        st.markdown('<div class="metric-box">🟢 Giá thấp nhất</div>', unsafe_allow_html=True)
+        st.markdown(f"<div class='metric-box'>{min_price:,.0f}</div>", unsafe_allow_html=True)
+    with col2:
+        st.markdown('<div class="metric-box">🔴 Giá cao nhất</div>', unsafe_allow_html=True)
+        st.markdown(f"<div class='metric-box'>{max_price:,.0f}</div>", unsafe_allow_html=True)
+    with col3:
+        st.markdown('<div class="metric-box">🟡 Giá trung vị</div>', unsafe_allow_html=True)
+        st.markdown(f"<div class='metric-box'>{median_price:,.0f}</div>", unsafe_allow_html=True)
+    with col4:
+        st.markdown('<div class="metric-box">🔵 Giá trung bình</div>', unsafe_allow_html=True)
+        st.markdown(f"<div class='metric-box'>{avg_price:,.0f}</div>", unsafe_allow_html=True)
 else:
     st.warning("Không có dữ liệu giá để thống kê.")
 
