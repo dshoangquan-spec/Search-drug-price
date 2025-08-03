@@ -156,10 +156,14 @@ if nuocsx:
 if donvitinh:
     filtered_df = filtered_df[filtered_df["donvitinh"].isin(donvitinh)]
 
-filtered_df = filtered_df[
-    (filtered_df["tungay_hd"] >= pd.to_datetime(tungay)) &
-    (filtered_df["denngay_hd"] <= pd.to_datetime(denngay))
-]
+if tungay and denngay:
+    filtered_df = filtered_df[
+        (filtered_df["tungay_hd"] >= pd.to_datetime(tungay)) &
+        (
+            filtered_df["denngay_hd"].isna() |
+            (filtered_df["denngay_hd"] <= pd.to_datetime(denngay))
+        )
+    ]
 
 st.markdown(f"### ✅ Tìm thấy {len(filtered_df)} kết quả")
 
