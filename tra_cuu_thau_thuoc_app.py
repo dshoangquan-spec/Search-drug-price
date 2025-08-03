@@ -81,14 +81,13 @@ st.markdown("""
 @st.cache_data
 def load_data():
     url = "https://raw.githubusercontent.com/dshoangquan-spec/Search-drug-price/main/TH_KQTT_2024_2025_clean.csv.gz"
-    df = pd.read_csv(url, compression="gzip")
-    df.columns = df.columns.str.strip()  # loại bỏ khoảng trắng đầu/cuối tên cột
-    st.write("Cột hiện có:", df.columns.tolist())  # Debug tên cột
+    df = pd.read_csv(url, compression="gzip", encoding="utf-8-sig")
+    df.columns = df.columns.str.strip().str.lower().str.replace('\r', '')  # Làm sạch tên cột
+
     df["tungay_hd"] = pd.to_datetime(df.get("tungay_hd"), errors="coerce")
     df["denngay_hd"] = pd.to_datetime(df.get("denngay_hd"), errors="coerce")
+
     return df
-
-
 
 df = load_data()
 st.markdown('<div class="custom-header">TRA CỨU KẾT QUẢ THẦU THUỐC THEO DỮ LIỆU BHYT</div>', unsafe_allow_html=True)
