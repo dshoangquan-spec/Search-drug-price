@@ -82,6 +82,7 @@ st.markdown("""
 def load_data():
     url = "https://raw.githubusercontent.com/dshoangquan-spec/Search-drug-price/main/TH_KQTT_2024_2025_clean.csv.gz"
     df = pd.read_csv(url, compression="gzip", encoding="utf-8-sig")
+    df.columns = df.columns.str.strip().str.lower().str.replace('\r', '').str.replace('\n', '')
 
     # Làm sạch tên cột để tránh lỗi
     df.columns = df.columns.str.strip().str.lower().str.replace('\r', '')
@@ -92,6 +93,7 @@ def load_data():
     return df
 
 df = load_data()
+st.write(df.columns.tolist())
 st.markdown('<div class="custom-header">TRA CỨU KẾT QUẢ THẦU THUỐC THEO DỮ LIỆU BHYT</div>', unsafe_allow_html=True)
 
 col_left, col_center, col_right = st.columns(3)
