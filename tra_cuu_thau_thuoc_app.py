@@ -86,7 +86,7 @@ filtered_df = filtered_df[
 st.markdown(f"### ✅ Tìm thấy {len(filtered_df)} kết quả")
 
 # Ẩn và dời cột
-hidden_cols = ['loai_thau', 'ma_tinh', 'ten_don_vi', 'ma_cskcb', 'ma_gy', 'maduongdlu']
+hidden_cols = ['loai_thau', 'ma_tinh', 'ten_don_vi', 'ma_cskcb', 'ma_gy', 'maduongdung']
 move_to_end = ['ten_cskcb', 'ten_tinh']
 
 # Lấy tất cả cột còn lại trừ cột ẩn và cột cần chuyển ra cuối
