@@ -17,25 +17,29 @@ df = load_data()
 st.title("💊 Tra cứu kết quả thầu thuốc")
 
 with st.expander("📂 Bộ lọc nâng cao"):
-    ten = st.text_input("🔍 Tìm theo tên thuốc (từ khoá bất kỳ)", "")
-    hoatchat = st.text_input("💡 Tìm theo hoạt chất", "")
+   # Lọc trước theo tên hoặc hoạt chất để dùng cho dropdown
+    df_temp = df.copy()
+    if ten:
+    df_temp = df_temp[df_temp["ten"].astype(str).str.lower().str.contains(ten.strip().lower())]
+    if hoatchat:
+    df_temp = df_temp[df_temp["hoatchat"].astype(str).str.lower().str.contains(hoatchat.strip().lower())]
 
     col1, col2 = st.columns(2)
-    duongdung_options = sorted(df["duongdung"].dropna().unique())
-    dangbaoche_options = sorted(df["dangbaoche"].dropna().unique())
+    duongdung_options = sorted(df_temp["duongdung"].dropna().unique())
+    dangbaoche_options = sorted(df_temp["dangbaoche"].dropna().unique())
 
     duongdung = col1.multiselect("🚑 Chọn đường dùng", duongdung_options)
     dangbaoche = col2.multiselect("💊 Chọn dạng bào chế", dangbaoche_options)
 
     col3, col4 = st.columns(2)
-    nhasx_options = sorted(df["nhasx"].dropna().unique())
-    nuocsx_options = sorted(df["nuocsx"].dropna().unique())
+    nhasx_options = sorted(df_temp["nhasx"].dropna().unique())
+    nuocsx_options = sorted(df_temp["nuocsx"].dropna().unique())
 
     nhasx = col3.multiselect("🏭 Nhà sản xuất", nhasx_options)
     nuocsx = col4.multiselect("🌍 Nước sản xuất", nuocsx_options)
 
     col5, col6 = st.columns(2)
-    donvitinh_options = sorted(df["donvitinh"].dropna().unique())
+    donvitinh_options = sorted(df_temp["donvitinh"].dropna().unique())
     donvitinh = col5.multiselect("📦 Đơn vị tính", donvitinh_options)
 
     tungay = col6.date_input("📅 Từ ngày (hiệu lực)", value=pd.to_datetime("2024-09-01"))
