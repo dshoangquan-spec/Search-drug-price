@@ -23,6 +23,7 @@ st.markdown("""
         }
         .metric-box {
             font-weight: bold;
+            font-size: 20px;
         }
         .stTextInput > div > div,
         .stRadio > div {
