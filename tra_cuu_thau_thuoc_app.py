@@ -80,13 +80,18 @@ st.markdown("""
 
 @st.cache_data
 def load_data():
-    df = pd.read_csv("demo_thau_thuoc.csv", sep=",", encoding="utf-8-sig")
+    url = "https://raw.githubusercontent.com/dshoangquan-spec/Search-drug-price/main/TH_KQTT_2024_2025_clean.csv.gz"
+    df = pd.read_csv(url, compression="gzip", encoding="utf-8-sig")
+
+    # Làm sạch tên cột
+    df.columns = df.columns.str.strip().str.lower().str.replace('\r', '').str.replace('\n', '')
+
     df["tungay_hd"] = pd.to_datetime(df["tungay_hd"], errors="coerce")
     df["denngay_hd"] = pd.to_datetime(df["denngay_hd"], errors="coerce")
     return df
 
+
 df = load_data()
-st.write(df.columns.tolist())
 st.markdown('<div class="custom-header">TRA CỨU KẾT QUẢ THẦU THUỐC THEO DỮ LIỆU BHYT</div>', unsafe_allow_html=True)
 
 col_left, col_center, col_right = st.columns(3)
@@ -112,7 +117,7 @@ with st.expander("📂 Bộ lọc nâng cao"):
         df_temp = df_temp[df_temp["hoatchat"].astype(str).str.lower().str.contains(hoatchat.strip().lower())]
 
     col1, col2 = st.columns(2)
-    dduongdung_options = sorted(df["duongdung"].dropna().unique())
+    duongdung_options = sorted(df["duongdung"].dropna().unique())
     dangbaoche_options = sorted(df_temp["dangbaoche"].dropna().unique())
 
     duongdung = col1.multiselect("🚑 Chọn đường dùng", duongdung_options)
