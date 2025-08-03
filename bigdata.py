@@ -11,13 +11,11 @@ def load_duckdb():
     con = duckdb.connect(database=':memory:')
     con.execute(f"""
         CREATE OR REPLACE TABLE danhmuc AS 
-        SELECT * 
+        SELECT 
+            *, 
+            TRY_CAST(tungay_hd AS TIMESTAMP) AS tungay,
+            TRY_CAST(denngay_hd AS TIMESTAMP) AS denngay
         FROM read_csv_auto('{url}', compression='gzip', delim=',', header=True)
-    """)
-    con.execute("""
-        ALTER TABLE danhmuc 
-        ALTER COLUMN tungay_hd SET DATA TYPE TIMESTAMP,
-        ALTER COLUMN denngay_hd SET DATA TYPE TIMESTAMP;
     """)
     return con
 
@@ -38,7 +36,6 @@ with col_center:
 
 # Bộ lọc nâng cao
 with st.expander("📂 Bộ lọc nâng cao"):
-    # Truy vấn sơ bộ để lấy các giá trị duy nhất
     duongdung = st.multiselect("🚑 Chọn đường dùng", 
         con.execute("SELECT DISTINCT duongdung FROM danhmuc WHERE duongdung IS NOT NULL").df()["duongdung"].dropna().tolist()
     )
@@ -57,7 +54,7 @@ with st.expander("📂 Bộ lọc nâng cao"):
     tungay = st.date_input("📅 Từ ngày (hiệu lực)", value=pd.to_datetime("2024-09-01"))
     denngay = st.date_input("📅 Đến ngày (hiệu lực)", value=pd.to_datetime("2025-03-31"))
 
-# Tạo câu truy vấn SQL theo filter
+# Tạo câu truy vấn SQL
 query = "SELECT * FROM danhmuc WHERE 1=1"
 
 if ten:
@@ -74,11 +71,10 @@ if nuocsx:
     query += f" AND nuocsx IN ({','.join([f'\'{d}\'' for d in nuocsx])})"
 if donvitinh:
     query += f" AND donvitinh IN ({','.join([f'\'{d}\'' for d in donvitinh])})"
-
 if tungay and denngay:
-    query += f" AND tungay_hd >= TIMESTAMP '{tungay}' AND tungay_hd <= TIMESTAMP '{denngay}'"
+    query += f" AND tungay >= TIMESTAMP '{tungay}' AND tungay <= TIMESTAMP '{denngay}'"
 
-# Chạy truy vấn và hiển thị
+# Thực thi truy vấn
 df_result = con.execute(query).df()
 
 st.markdown(f"### ✅ Tìm thấy {len(df_result)} kết quả")
@@ -103,11 +99,9 @@ def to_excel(df):
         df.to_excel(writer, index=False)
     return output.getvalue()
 
-excel_data = to_excel(df_result)
-
 st.download_button(
     label="📥 Tải kết quả ra Excel",
-    data=excel_data,
+    data=to_excel(df_result),
     file_name="ket_qua_thau_duckdb.xlsx",
     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 )
