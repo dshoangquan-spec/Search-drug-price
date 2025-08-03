@@ -71,9 +71,14 @@ st.success(f"🔍 Có {len(filtered_df)} kết quả được tìm thấy.")
 st.dataframe(filtered_df, use_container_width=True)
 
 # Nút tải Excel
-@st.cache_data
+import io
+
 def to_excel(df):
-    return df.to_excel(index=False, engine='openpyxl')
+    output = io.BytesIO()
+    with pd.ExcelWriter(output, engine='openpyxl') as writer:
+        df.to_excel(writer, index=False)
+    processed_data = output.getvalue()
+    return processed_data
 
 excel_data = to_excel(filtered_df)
 
@@ -83,3 +88,4 @@ st.download_button(
     file_name="ket_qua_thau_thuoc.xlsx",
     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 )
+
